@@ -1,14 +1,31 @@
 import requests
 
+# Replace these with your actual Infobip account values
+BASE_URL = "https://4epqym.api.infobip.com"  # Use your real Infobip base URL
+API_KEY = "b915269f7ca3fe54fba60cbcd3e5ec49-bcc63ba6-63b6-4c1e-a353-6820af4f3b09"
+SENDER_ID = "Inara"  # Appears in SMS on supported networks
+
 def send_sms(phone_number, otp):
-    sender_name = "inara"
-    message = f"[{sender_name}] Your OTP is: {otp}. Reply STOP to opt-out."
+    url = f"{BASE_URL}/sms/2/text/advanced"
+    
+    headers = {
+        "Authorization": f"App {API_KEY}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    }
 
-    resp = requests.post('https://textbelt.com/text', {
-        'phone': phone_number,
-        'message': message,
-        'key': '9d4b615316ac1942f632cf211f23f66a6458ae0cQTXI0gJEiB4q5j0cF0dOYdJwF'  # Replace with your paid key
-    })
+    payload = {
+        "messages": [
+            {
+                "from": SENDER_ID,
+                "destinations": [{"to": phone_number}],
+                "text": f"[CryptoApp] Your OTP is: {otp}. Reply STOP to opt-out."
+            }
+        ]
+    }
 
-    print("SMS API response:", resp.json())
-    return resp.json()
+    response = requests.post(url, json=payload, headers=headers)
+    
+    print("SMS API response:", response.json())
+
+    return response.json()

@@ -1,9 +1,10 @@
 import random
 
-def key_to_otp(key):
-    return ''.join(str(b).zfill(3) for b in key)[:6]  # Convert to 6-digit OTP
-
-def otp_to_key(otp):
-    seed = int(otp) * 123456  # Deterministic method
+def generate_deterministic_key(otp: str):
+    # Ensure same seed always gives same key
+    seed = int(otp)
     random.seed(seed)
     return bytes([random.randint(0, 255) for _ in range(16)])
+
+def generate_otp():
+    return str(random.randint(100000, 999999))
